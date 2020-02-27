@@ -1,25 +1,27 @@
 <template>
-  <el-row :gutter="0">
-    <el-col :span="5"><Geo/></el-col>
-    <el-col :span="6"><User/></el-col>
-    <el-col :span="13"><Navbar/></el-col>
-  </el-row>
+  <div class="m-header">
+    <el-row>
+      <el-col><top-bar/></el-col>
+    </el-row>
+    <el-row>
+      <el-col><search-bar/></el-col>
+    </el-row>
+  </div>
 </template>
 
 <script>
-    import Geo from './geo.vue'
-    import User from './user.vue'
-    import Navbar from './navbar.vue'
-    export default {
-        name: "index",
-        components: {
-          Geo,
-          User,
-          Navbar
-        }
+  import topBar from './topbar'
+  import searchBar from './searchbar'
+
+  export default {
+    name: "index",
+    components: {
+      topBar,
+      searchBar
     }
+  }
 </script>
 
 <style lang="scss">
-  @import  '../../../assets/css/public/header/topbar.scss';
+  @import "../../../assets/css/public/header/index";
 </style>
