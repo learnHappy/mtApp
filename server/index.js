@@ -3,6 +3,9 @@ import Koa from 'koa'
 const consola = require('consola')
 const { Nuxt, Builder } = require('nuxt')
 
+import geo from './interface/geo'
+import search from './interface/search'
+
 const app = new Koa()
 
 // Import and Set Nuxt.js options
@@ -24,6 +27,9 @@ async function start () {
     const builder = new Builder(nuxt)
     await builder.build()
   }
+
+  app.use(geo.routes()).use(geo.allowedMethods())
+  app.use(search.routes()).use(search.allowedMethods())
 
   app.use((ctx) => {
     ctx.status = 200
