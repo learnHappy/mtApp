@@ -2,7 +2,7 @@
   <div class="m-menu">
     <dl class="nav" @mouseleave="mouseleave">
       <dt>全部分类</dt>
-      <dd @mouseover="getKind" v-for="(item,index) in menu"  :key="index"><i :class="item.type"/>{{item.title}}<span class="arrow"/></dd>
+      <dd @mouseover="getKind" v-for="(item,index) in menu"  :key="index"><i @mouseover.stop :class="item.type"/>{{item.title}}<span @mouseover.stop class="arrow"/></dd>
     </dl>
     <div class="detail" v-if="kind" @mouseover="sover" @mouseleave="sout">
       <template v-for="(item,index) in curdetail">
@@ -51,7 +51,6 @@
         },150)
       },
       getKind: function (obj) {
-        console.info(obj)
         this.kind = obj.target.querySelector('i').className
       },
       sover: function () {
