@@ -8,6 +8,18 @@
       <dd :class="{active:kind==='movie'}" kind="movie" keyword="电影">电影演出</dd>
       <dd :class="{active:kind==='travel'}" kind="travel" keyword="旅游">品质出游</dd>
     </dl>
+    <ul class="ibody">
+      <li v-for="item in cur" :key="item.title">
+        <el-card :body-style="{ padding: '0px' }" shadow="never">
+          <img :src="item.img" class="image">
+          <ul class="cbody">
+            <li class="title">{{ item.title }}</li>
+            <li class="pos"><span>{{ item.pos }}</span></li>
+            <li class="price">￥<em>{{ item.price }}</em><span>/起</span></li>
+          </ul>
+        </el-card>
+      </li>
+    </ul>
   </section>
 </template>
 
@@ -17,11 +29,41 @@
     data() {
       return {
         kind: 'all',
-        all: [],
-        part: [],
-        spar: [],
-        movie: [],
-        travel: [],
+        list : {
+          all: [],
+          part: [],
+          spar: [],
+          movie: [],
+          travel: []
+        }
+      }
+    },
+    computed: {
+      cur: function () {
+        return this.list[this.kind]
+      }
+    },
+    async mounted() {
+      let self = this;
+      let {status, data: {count, pois}} = await self.$axios.get('/search/resultsByKeywords', {
+        params: {
+          keyword: '景点',
+          city: self.$store.state.geo.position.city
+        }
+      })
+      if (status === 200 && count > 0) {
+        let r = pois.filter(item => item.photos.length).map(item => {
+          return {
+            title: item.name,
+            pos: item.type.split(';')[0],
+            price: item.biz_ext.cost || '暂无',
+            img: item.photos[0].url,
+            url: '//abc.com'
+          }
+        })
+        self.list[self.kind] = r.slice(0, 9)
+      } else {
+        self.list[self.kind] = []
       }
     },
     methods: {
@@ -35,23 +77,22 @@
           let obj = await self.$axios.get('/search/resultsByKeywords', {
             params: {keyword, city: self.$store.state.geo.position.city}
           })
-          console.info(obj)
-          /*         let {status, data: {count, pois}} = await self.$axios.get('/search/resultsByKeywords', {
-                     params: {keyword, city: self.$store.state.geo.position.city}
-                   })
-                   if (status === 200 && count === 0) {
-                     let r = pois.filter(item => item.photos.length).map(item => {
-                       return {
-                         title: item.name,
-                         pos: item.biz_ext.cost || '暂无',
-                         img: item.photos[0].url,
-                         url: '//abc.com'
-                       }
-                     })
-                     self.list[self.kind] = r.slice(0, 9)
-                   } else {
-                     self.list[self.kind] = []
-                   }*/
+          let {status, data: {count, pois}} = await self.$axios.get('/search/resultsByKeywords', {
+            params: {keyword, city: self.$store.state.geo.position.city}
+          })
+          if (status === 200 && count > 0) {
+            let r = pois.filter(item => item.photos.length).map(item => {
+              return {
+                title: item.name,
+                pos: item.biz_ext.cost || '暂无',
+                img: item.photos[0].url,
+                url: '//abc.com'
+              }
+            })
+            self.list[self.kind] = r.slice(0, 9)
+          } else {
+            self.list[self.kind] = []
+          }
         }
       }
     }
