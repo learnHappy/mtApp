@@ -13,7 +13,7 @@
     </article>
 
     <section>
-      <el-form ref="form" :model="ruleForm" :rules="rules" label-width="100px" size="mini">
+      <el-form ref="ruleForm" :model="ruleForm" :rules="rules" label-width="100px" size="mini">
         <el-form-item label="昵称" prop="name">
           <el-input v-model="ruleForm.name"></el-input>
         </el-form-item>
@@ -74,9 +74,9 @@
             validator: (rule, value, callback) => {
               if (value === '') {
                 callback(new Error('请再次输入密码！'))
-              }else if (value!==this.rule.pwd){
+              } else if (value !== this.rule.pwd) {
                 callback(new Error('两次输入密码不一致！'))
-              }else {
+              } else {
                 callback()
               }
             },
@@ -87,7 +87,40 @@
     },
     methods: {
       sendMsg: function () {
-
+        const self = this;
+        let namePass
+        let emailPass
+        if (self.timerid) {
+          return false
+        }
+        this.$refs['ruleForm'].validateField('name', (valid) => {
+          namePass = valid
+        })
+        self.statusMsg = ''
+        if (namePass) {
+          return false
+        }
+        this.$refs['ruleForm'].validateField('email', (valid) => {
+          namePass = valid
+        })
+        if (!namePass && !emailPass) {
+          self.$axios.post('/users/verify', {
+            username: encodeURIComponent(self.ruleForm.name),
+            email: self.ruleForm.email
+          }).then(({status, data}) => {
+            if (status === 200 && data && data.code === 0) {
+              let count = 60;
+              self.timerid= setInterval(function () {
+                self.statusMsg = `验证码已经发送,剩余${count--}秒`
+                if (count === 0){
+                  clearInterval(self.timerid)
+                }
+              },1000)
+            }else {
+              self.statusMsg = data.msg
+            }
+          })
+        }
       },
       register: function () {
 
