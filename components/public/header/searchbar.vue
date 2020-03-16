@@ -10,22 +10,18 @@
             placeholder="搜索商家或地点"
             @focus="getFocus"
             @blur="loseFocus"
-          @input="input"/>
+            @input="input"/>
           <button class="el-button el-button--primary"><i class="el-icon-search"></i></button>
-          <dl class="hotPlace" v-if="isHotPlace" >
+          <dl class="hotPlace" v-if="isHotPlace">
             <dt>热门搜索</dt>
-            <dd v-for="(item,index) in hotPlace" :key="index">{{item}}</dd>
+            <dd v-for="(item,index) in $store.state.home.hotPlace.slice(0,5)" :key="index">{{item.name}}</dd>
           </dl>
           <dl class="searchList" v-if="isSearchList">
-            <dd v-for="(item,index) in searchList" :key="index">{{item}}</dd>
+            <dd v-for="(item,index) in searchList" :key="index">{{item.name}}</dd>
           </dl>
         </div>
         <p class="suggset">
-          <a href="#">故宫博物院</a>
-          <a href="#">故宫博物院</a>
-          <a href="#">故宫博物院</a>
-          <a href="#">故宫博物院</a>
-          <a href="#">故宫博物院</a>
+          <a v-for="(item,ind) in $store.state.home.hotPlace.slice(0,5)" :key="ind" href="#">{{item.name}}</a>
         </p>
         <ul class="nav">
           <li>
@@ -60,29 +56,40 @@
 </template>
 
 <script>
+  import _ from 'lodash'
+
   export default {
     name: "search",
     data() {
       return {
         show: false,
         search: '',
-        hotPlace: ['火锅', '排挡', '烤鱼'],
-        searchList: ['故宫', '长城', '天安门']
+        hotPlace: [],
+        searchList: []
       }
     },
     methods: {
-      getFocus: function() {
+      getFocus: function () {
         this.show = true
       },
-      loseFocus: function() {
+      loseFocus: function () {
         let self = this;
         setTimeout(function () {
           self.show = false
-        },200)
+        }, 200)
       },
-      input: function () {
-        console.info(this.search)
-      }
+      input: _.debounce(async function () {
+        let self = this;
+        let city = self.$store.state.geo.position.city.replace('市', '')
+        self.searchList = []
+        let {status, data: {top}} = await self.$axios.get('/search/top', {
+          params: {
+            input: self.search,
+            city
+          }
+        })
+        self.searchList = top.slice(0, 10)
+      }, 300)
     },
     computed: {
       isHotPlace: function () {
@@ -96,7 +103,10 @@
 </script>
 
 <style>
-  .m-header .m-header-searchbar .center .wrapper .hotPlace, .m-header .m-header-searchbar .center .wrapper .searchList{
-    top: 42px!important;
+  .m-header .m-header-searchbar .center .wrapper .hotPlace, .m-header .m-header-searchbar .center .wrapper .searchList {
+    top: 42px !important;
+  }
+  .suggset > a{
+    margin-left: 5px;
   }
 </style>

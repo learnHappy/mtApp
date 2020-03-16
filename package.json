@@ -26,6 +26,7 @@
     "koa-redis": "^3.1.2",
     "koa-router": "^8.0.8",
     "less-loader": "^5.0.0",
+    "lodash": "^4.17.15",
     "mongoose": "^5.3.0",
     "node-sass": "^4.13.1",
     "nodemailer": "^6.4.4",
