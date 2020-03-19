@@ -90,7 +90,8 @@
         }
       }, 200),
       handleSelect: function (item) {
-        window.href = '/'
+        this.$store.commit('setPosition',{city:item.value,province: ''})
+        window.location.href = '/'
       }
     }
   }
