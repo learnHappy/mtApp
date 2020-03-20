@@ -3,8 +3,10 @@
     <dl class="tab">
       <dt>{{ name }}<i class="el-icon-arrow-down el-icon--right"/></dt>
       <dd>
-        <h3>{{name}}</h3>
-        <span v-for="(item,index) in list" :key="index">{{item}}</span>
+        <h3>{{ name }}</h3>
+        <span
+          v-for="(item,idx) in list"
+          :key="idx">{{ item }}</span>
       </dd>
     </dl>
   </div>
@@ -12,22 +14,17 @@
 
 <script>
   export default {
-    name: "iselect",
     props: {
       name: {
-        type: String,
-        default: ''
-      }
-    },
-    list: {
-      type: Array,
-      default() {
-        return []
+        type:String,
+        default:''
+      },
+      list: {
+        type: Array,
+        default(){
+          return []
+        }
       }
     }
   }
 </script>
-
-<style scoped>
-
-</style>

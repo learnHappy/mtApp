@@ -48,7 +48,6 @@ router.get('/hotPlace', async (ctx) => {
 
 router.get('/resultsByKeywords', async (ctx) => {
   const {city, keyword} = ctx.query;
-  console.info(ctx.query)
   let {status, data: {count, pois}} = await axios.get('http://cp-tools.cn/search/resultsByKeywords', {
     param: {city, keyword, sign}
   })

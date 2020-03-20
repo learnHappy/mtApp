@@ -47,7 +47,6 @@
         }
         blocks.sort((a,b) => a.title.charCodeAt(0) - b.title.charCodeAt(0))
         self.block = blocks
-        console.info(blocks)
       }
 
     }

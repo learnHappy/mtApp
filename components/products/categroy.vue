@@ -26,10 +26,10 @@
 </template>
 
 <script>
-  import iselect from './iselect.vue'
+  import Iselect from './iselect.vue'
   export default {
     components: {
-      iselect
+      Iselect
     },
     props: {
       types: {
